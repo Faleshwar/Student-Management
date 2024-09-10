@@ -1,0 +1,20 @@
+apiVersion:apps/v1
+kind:deployment
+metadata:
+  name:st-app
+  spec:
+    selector:
+      matchLabels:
+        app:student-managment-system
+    replicas:3
+    template:
+      metadata:
+        labels:
+          app:student-managment-system
+      spec:
+        containers:
+          - name:student-managment-system
+            image:spring-mongo
+            ports:
+              containerPorts:8080
+
