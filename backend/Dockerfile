@@ -9,7 +9,7 @@
 
 
 # Use a Maven image to build the application
-FROM maven:3.8.7-openjdk-17-slim AS build
+FROM 3.9.9-eclipse-temurin-11-openjdk-17-slim AS build
 
 # Set the working directory
 WORKDIR /app
