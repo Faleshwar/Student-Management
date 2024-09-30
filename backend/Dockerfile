@@ -7,35 +7,36 @@
 # EXPOSE 8080
 # ENTRYPOINT ["java","-jar", "app.jar"]
 
-# Use a base image with JDK 17 installed
-FROM openjdk:17-jdk-slim AS build
 
-# Set the working directory inside the container
+# Use a Maven image to build the application
+FROM maven:3.8.7-openjdk-17-slim AS build
+
+# Set the working directory
 WORKDIR /app
 
-# Copy the Maven project files
-COPY /pom.xml .
-
-# Download all dependencies (to take advantage of Docker layer caching)
+# Copy the pom.xml and install dependencies
+COPY pom.xml ./   # Copy pom.xml from the backend directory
 RUN mvn dependency:go-offline -B
 
-# Copy the entire project into the container
-COPY . .
+# Copy the rest of the application source code
+COPY . ./         # Copy the entire backend directory
 
-# Package the application (this will create the JAR file)
+# Build the application and create the JAR file
 RUN mvn clean package -DskipTests
 
-# Build a lightweight image for production
+# Use a lightweight JRE image for the runtime
 FROM openjdk:17-jdk-slim
 
-# Set the working directory inside the container
+# Set the working directory for the runtime
 WORKDIR /app
 
 # Copy the built JAR file from the previous build stage
 COPY --from=build /app/target/*.jar app.jar
 
-# Expose the port the app runs on (default is 8080)
+# Expose the port your application runs on (default is 8080)
 EXPOSE 8080
 
-# Command to run the JAR file
+# Command to run the Spring Boot application
 ENTRYPOINT ["java", "-jar", "app.jar"]
+
+
