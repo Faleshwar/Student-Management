@@ -8,18 +8,18 @@
 # ENTRYPOINT ["java","-jar", "app.jar"]
 
 
-# Use a Maven image to build the application
-FROM 3.9.9-eclipse-temurin-11-openjdk-17-slim AS build
+# Use the latest Maven image
+FROM maven:latest AS build
 
 # Set the working directory
 WORKDIR /app
 
 # Copy the pom.xml and install dependencies
-COPY pom.xml ./   # Copy pom.xml from the backend directory
+COPY pom.xml ./
 RUN mvn dependency:go-offline -B
 
 # Copy the rest of the application source code
-COPY . ./         # Copy the entire backend directory
+COPY . ./         
 
 # Build the application and create the JAR file
 RUN mvn clean package -DskipTests
