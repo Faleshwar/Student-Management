@@ -14,13 +14,13 @@ FROM openjdk:17-jdk-slim AS build
 WORKDIR /app
 
 # Copy the Maven project files
-COPY backend/pom.xml .
+COPY /pom.xml .
 
 # Download all dependencies (to take advantage of Docker layer caching)
 RUN mvn dependency:go-offline -B
 
 # Copy the entire project into the container
-COPY backend .
+COPY . .
 
 # Package the application (this will create the JAR file)
 RUN mvn clean package -DskipTests
